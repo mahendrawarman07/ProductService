@@ -19,8 +19,19 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        //TODO: HW
-        return null;
+        ResponseEntity<FakeStoreProductDto[]> responseEntity =
+                restTemplate.getForEntity(
+                        "https://fakestoreapi.com/products",
+                        FakeStoreProductDto[].class
+                );
+
+        FakeStoreProductDto[] fakeStoreProductDtos = responseEntity.getBody();
+
+        return fakeStoreProductDtos != null ?
+                java.util.Arrays.stream(fakeStoreProductDtos)
+                        .map((product)->convertFakeStoreProductDtoToProduct(product))
+                        .toList()
+                : List.of();
     }
 
     @Override
