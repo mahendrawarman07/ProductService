@@ -1,6 +1,7 @@
 package com.example.productservice.services;
 
 import com.example.productservice.dtos.FakeStoreProductDto;
+import com.example.productservice.exceptions.ProductNotFoundException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,11 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product getSingleProduct(Long productId) {
+    public Product getSingleProduct(Long productId) throws ProductNotFoundException {
         //make a http call to fakestore api to get the product with the given id.
         // https://fakestoreapi.com/products/1
+
+        //        throw new RuntimeException("Something went wrong");
 
         ResponseEntity<FakeStoreProductDto> responseEntity =
                 restTemplate.getForEntity(
@@ -45,7 +48,17 @@ public class FakeStoreProductService implements ProductService {
                         FakeStoreProductDto.class
                 );
 
-        return convertFakeStoreProductDtoToProduct(responseEntity.getBody());
+//        return convertFakeStoreProductDtoToProduct(responseEntity.getBody());
+
+        FakeStoreProductDto fakeStoreProductDto = responseEntity.getBody();
+
+        if (fakeStoreProductDto == null) {
+            //Invalid productId.
+            throw new ProductNotFoundException(productId);
+        }
+
+
+        return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
     }
 
     @Override
@@ -59,9 +72,9 @@ public class FakeStoreProductService implements ProductService {
     }
 
     private Product convertFakeStoreProductDtoToProduct(FakeStoreProductDto fakeStoreProductDto) {
-        if (fakeStoreProductDto == null) {
-            return null;
-        }
+//        if (fakeStoreProductDto == null) {
+//            return null;
+//        }
 
         Product product = new Product();
         product.setTitle(fakeStoreProductDto.getTitle());
