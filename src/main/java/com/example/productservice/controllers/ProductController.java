@@ -3,6 +3,8 @@ package com.example.productservice.controllers;
 import com.example.productservice.exceptions.ProductNotFoundException;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("selfProductService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -52,7 +54,8 @@ public class ProductController {
     // localhost:8080/products
     @PostMapping()
     public Product createProduct(@RequestBody Product product) {
-        return null;
+//        System.out.println("Product received: " + product.getId());
+        return productService.createProduct(product);
     }
 
     @PutMapping("/{id}")
