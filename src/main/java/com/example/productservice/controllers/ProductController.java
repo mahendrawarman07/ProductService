@@ -40,6 +40,19 @@ public class ProductController {
 //            );
 //        }
 
+
+//        System.out.println("DEBUG");
+//        Product product = productService.getSingleProduct(productId); // @16640
+//
+//        Product p = new Product(); // @16736
+//        p.setId(productId);
+//        p.setTitle("iPhone 14 pro max.");
+//        p.setDescription("iPhone 14 pro max.");
+//        p.setPrice(130000.0);
+//
+//        return p;
+
+
         return productService.getSingleProduct(productId);
 
         // HTTPStatus Code - 200, 404, 403, 500, 429, ....
