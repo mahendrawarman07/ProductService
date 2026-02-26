@@ -1,5 +1,6 @@
 package com.example.productservice.controllers;
 
+import com.example.productservice.commons.AuthCommons;
 import com.example.productservice.exceptions.ProductNotFoundException;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
@@ -24,8 +25,8 @@ public class ProductController {
     }
 
     // localhost:8080/products/1
-    @GetMapping("/{productId}")
-    public Product getSingleProduct(@PathVariable("productId") Long productId) throws ProductNotFoundException {
+    @GetMapping("/{productId}/{tokenValue}")
+    public ResponseEntity<Product> getSingleProduct(@PathVariable("productId") Long productId,@PathVariable("tokenValue") String tokenValue) throws ProductNotFoundException {
 //        try {
 //            Product product = productService.getSingleProduct(productId);
 //
@@ -53,7 +54,18 @@ public class ProductController {
 //        return p;
 
 
-        return productService.getSingleProduct(productId);
+//        return productService.getSingleProduct(productId);
+
+        Product product = null;
+        ResponseEntity<Product> responseEntity = null;
+        if (AuthCommons.validateToken(tokenValue)) {
+            product = productService.getSingleProduct(productId);
+            responseEntity = new ResponseEntity<>(product, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<>(product, HttpStatus.UNAUTHORIZED);
+        }
+
+        return responseEntity;
 
         // HTTPStatus Code - 200, 404, 403, 500, 429, ....
     }
