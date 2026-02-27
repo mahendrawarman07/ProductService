@@ -4,6 +4,8 @@ import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import com.example.productservice.projections.ProductWithTitleAndPrice;
 import com.example.productservice.projections.ProductWithTitleAndPriceDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,7 +28,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByTitle(String title);
 
     //select * from products where title LIKE '%str%'
-    List<Product> findByTitleContainsIgnoreCase(String str);
+//    List<Product> findByTitleContainsIgnoreCase(String str);
+
+    //select * from products where title LIKE '%iPhone%'
+    Page<Product> findByTitleContainsIgnoreCase(String str, Pageable pageable);
 
     // select * from products where price >= start and price <= end
     List<Product> findByPriceBetween(Double start, Double end);

@@ -6,6 +6,7 @@ import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +87,17 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product replaceProduct(@PathVariable("id") Long productId, @RequestBody Product product) {
         return null;
+    }
+
+
+    // http://localhost:8080/products/title/iphone
+    @GetMapping("/title/{title}/{pageNumber}/{pageSize}")
+    public Page<Product> getProductsByTitle(
+            @PathVariable("title") String title,
+            @PathVariable("pageNumber") int pageNumber,
+            @PathVariable("pageSize") int pageSize) {
+
+        return productService.getProductsByTitle(title, pageNumber, pageSize);
     }
 
 //    @ExceptionHandler(ProductNotFoundException.class)
