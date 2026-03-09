@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
 import java.util.ArrayList;
@@ -20,9 +21,12 @@ import java.util.List;
 @RequestMapping("/products") // endpoint - /products
 public class ProductController {
     private ProductService productService;
+    private RestTemplate restTemplate;
 
-    public ProductController(@Qualifier("fakeStoreProductService") ProductService productService) {
+    public ProductController(@Qualifier("fakeStoreProductService") ProductService productService,
+                             @Qualifier("loadBalancedRestTemplate") RestTemplate restTemplate) {
         this.productService = productService;
+        this.restTemplate = restTemplate;
     }
 
     // localhost:8080/products/1
@@ -54,6 +58,17 @@ public class ProductController {
 //
 //        return p;
 
+        System.out.println("getSingleProduct API called in ProductController!");
+
+        //make a demo call to User
+        //Instead of hardcoding the url of UserService, we should fetch the list of
+        //IP addresses of UserService from Service Discovery and then make a call
+        //to UserService in a load balanced way.
+        restTemplate.getForEntity(
+                "http://userservice/users/sample",
+                Void.class
+        );
+
 
 //        return productService.getSingleProduct(productId);
 
@@ -63,7 +78,7 @@ public class ProductController {
             product = productService.getSingleProduct(productId);
             responseEntity = new ResponseEntity<>(product, HttpStatus.OK);
 //        } else {
-//            responseEntity = new ResponseEntity<>(product, HttpStatus.UNAUTHORIZED);
+            responseEntity = new ResponseEntity<>(product, HttpStatus.UNAUTHORIZED);
 //        }
 
         return responseEntity;
